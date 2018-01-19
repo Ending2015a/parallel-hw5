@@ -12,8 +12,10 @@ public class UpdateMapper extends Mapper<Text, OutLink, Text, PageInfo>{
     
         ArrayList<Text> link = value.getOutlink();
 
+        double rank = value.getRank() / (double)value.getNumOutlink();
+
         for(Text l: link){
-            context.write(l, new PageInfo(value.getNumOutlink(), value.getRank()));
+            context.write(l, new PageInfo(rank));
         }
 
         context.write(key, new PageInfo(value));

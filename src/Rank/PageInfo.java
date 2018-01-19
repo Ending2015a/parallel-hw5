@@ -13,18 +13,15 @@ import org.apache.hadoop.io.Text;
 public class PageInfo implements Writable{
 
     private OutLink outlink;
-    private int numOutlink;
     private double rank;
     private boolean outlinkFlag; //false = numOutlink/rank , true = outlink
 
     public PageInfo(){
         outlinkFlag = false;
-        numOutlink = 0;
         rank = 0;
     }
 
-    public PageInfo(int numOutlink, double rank){
-        this.numOutlink = numOutlink;
+    public PageInfo(double rank){
         this.rank = rank;
         outlinkFlag = false;
     }
@@ -36,7 +33,6 @@ public class PageInfo implements Writable{
 
     public PageInfo(PageInfo info){
         if(info.outlinkFlag == false){
-            this.numOutlink = info.numOutlink;
             this.rank = info.rank;
             outlinkFlag = false;
         }else{
@@ -51,7 +47,6 @@ public class PageInfo implements Writable{
         if(outlinkFlag){
             outlink.write(out);
         }else{
-            out.writeInt(numOutlink);
             out.writeDouble(rank);
         }
     }
@@ -63,7 +58,6 @@ public class PageInfo implements Writable{
             outlink = new OutLink();
             outlink.readFields(in);
         }else{
-            numOutlink = in.readInt();
             rank = in.readDouble();
         }
     }
@@ -76,8 +70,6 @@ public class PageInfo implements Writable{
             buf.append(outlink.toString());
         }else{
             buf.append(rank);
-            buf.append('\t');
-            buf.append(numOutlink);
         }
         return buf.toString();
     }
@@ -95,10 +87,6 @@ public class PageInfo implements Writable{
         this.rank = rank;
     }
 
-    public void setNumOutlink(int num){
-        this.numOutlink = num;
-    }
-
     public OutLink getOutlink(){
         return outlink;
     }
@@ -106,10 +94,5 @@ public class PageInfo implements Writable{
     public double getRank(){
         return rank;
     }
-
-    public int getNumOutlink(){
-        return numOutlink;
-    }
-
 }
 

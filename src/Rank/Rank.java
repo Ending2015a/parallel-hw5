@@ -30,7 +30,6 @@ public class Rank{
     private String rankTmpPath = "Rank/";
 
     public ArrayList<Double> errorList;
-
     public Rank(String root){
     
         rankTmpPath = root + "/" + rankTmpPath;
@@ -58,7 +57,7 @@ public class Rank{
         String summary_out = getTmpPath("summary", 0);
 
         this.jobSummary(in, summary_out);
-        double summary[] = readSummary(summary_out + "/part-r-00000");
+        double summary[] = readBinarySummary(summary_out + "/part-r-00000");
 
         if(total_iterate == -1){
             total_iterate = 0;
@@ -77,7 +76,10 @@ public class Rank{
                 // write summary
                 summary_out = getTmpPath("summary", total_iterate);
                 this.jobSummary(update_out, summary_out);
-                summary = readSummary(summary_out + "/part-r-00000");
+
+                System.out.println(String.format("Output summary to %s", summary_out));
+
+                summary = readBinarySummary(summary_out + "/part-r-00000");
 
                 System.out.println(String.format("Error: %.10f, Dang: %.10f", summary[0], summary[1]));
                 
@@ -103,7 +105,7 @@ public class Rank{
                 summary_out = getTmpPath("summary", i);
                 this.jobSummary(update_out, summary_out);
 
-                summary = readSummary(summary_out + "/part-r-00000");
+                summary = readBinarySummary(summary_out +"/part-r-00000");
 
                 System.out.println(String.format("Error: %.10f, Dang: %.10f", summary[0], summary[1]));
 
@@ -131,6 +133,7 @@ public class Rank{
         double dang = 0;
 
         while(reader.next(key, value)){
+
             if(key.toString().equals("d"))
                 dang = value.get();
             else if(key.toString().equals("e"))
@@ -184,7 +187,7 @@ public class Rank{
         job.setOutputKeyClass(Text.class);
         job.setOutputValueClass(DoubleWritable.class);
 
-        job.setOutputFormatClass(TextOutputFormat.class);
+        job.setOutputFormatClass(SequenceFileOutputFormat.class);
 
         job.setNumReduceTasks(1);
 

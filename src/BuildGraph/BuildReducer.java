@@ -14,8 +14,10 @@ public class BuildReducer extends Reducer<Text, Text, Text, OutLink>{
         link.setRank(initial_rank);
 
         for(Text t: values){
-            if(!t.toString().equals("***self***"))
+            if(!t.toString().equals("***self***")){
+                context.getCounter("BuildReducer", "Total link").increment(1);
                 link.add(new Text(t));
+            }
         }
 
         link.setNumOutlink();

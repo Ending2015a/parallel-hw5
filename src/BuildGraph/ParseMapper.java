@@ -48,8 +48,8 @@ public class ParseMapper extends Mapper<LongWritable, Text, Text, Text> {
 
         while(linkMatcher.find()){
             link = new Text( 
-                            unescapeXML(
-                                capitalizeFirstLetter(linkMatcher.group().replaceAll("\\[\\[(.*)([\\|#]|\\]\\])", "$1"))
+                            capitalizeFirstLetter(
+                                    unescapeXML(linkMatcher.group().replaceAll("\\[\\[(.+?)([\\|#]|\\]\\])", "$1"))
                                 )
                             );
             context.write(link, title);

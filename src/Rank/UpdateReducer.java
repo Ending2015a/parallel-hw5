@@ -12,6 +12,7 @@ public class UpdateReducer extends Reducer<Text, PageInfo, Text, OutLink>{
     public void reduce(Text key, Iterable<PageInfo> values, Context context) throws IOException, InterruptedException{
     
         long total_page = context.getConfiguration().getLong("total_page", 10);
+        double inv = 1.0/(double)total_page;
         double dang_rank = context.getConfiguration().getDouble("dang_rank", 0.0);
 
         double pred = 0.0;
@@ -25,10 +26,10 @@ public class UpdateReducer extends Reducer<Text, PageInfo, Text, OutLink>{
                 continue;
             }
 
-            pred += p.getRank()/ (double)p.getNumOutlink();
+            pred += p.getRank();
         }
 
-        double new_rank = (1-alpha)/(double)total_page + alpha * (pred + dang_rank / (double)total_page);
+        double new_rank = (1.0-alpha)*inv + alpha * pred + alpha * dang_rank * inv;
 
         outlink.newRank(new_rank);
 
